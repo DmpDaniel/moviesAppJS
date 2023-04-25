@@ -10,13 +10,16 @@ const container = document.querySelector(".container")
 
 const defaults = 'https://api.themoviedb.org/3/'
 
-const textTh = `https://api.themoviedb.org/3//discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&page=`
+const defaultPage = `https://api.themoviedb.org/3//discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&page=`
 
 const jump = document.getElementById("jumpPage")
 
 const jumpText = document.getElementById("jumpText")
 
 const category = document.querySelectorAll(".categories")
+
+const form = document.getElementById("form")
+const inputText = document.getElementById("inputText")
 
 
 category.forEach((categry) => {
@@ -40,20 +43,22 @@ let returnCateg;
     else if (value === "Horror"){
       returnCateg = "/discover/movie?with_genres=27&"
     }
+    else if (value === "Popular"){
+        returnCateg = "/discover/movie?with_genres=35&"
+        }
+    else if (value === "Highest rated"){
+      returnCateg = `discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc&`
+    }
+    else if (value === "Movies Now"){
+      returnCateg = `/discover/movie?primary_release_date.gte=${getDate()}&primary_release_date.lte=${getDate2()}`
+    }
       return returnCateg
 }
 
-jump.addEventListener("submit", (eve) => {
-    eve.preventDefault()
-    if(isNaN(jumpText.value) || jumpText.value > 500){
-        alert("Enter a Valid number")
-        jumpText.value = ""
-    }else{
-        page = jumpText.value
-        getMovies(global.join(""),page)
-    }
-    
-})
+const moviesNow = ``
+    const popular = '/discover/movie?sort_by=popularity.desc'
+    const highestRated = ''
+
 
 document.getElementById("next").onclick = function (){
     container.innerHTML = ""
@@ -77,9 +82,10 @@ document.getElementById("prev").onclick = function(){
  const searchses  = `search/movie?&query=`
 
 async function getMovies (Location, page){
-    console.log( global)
+    console.log(global)
+    console.log(global.join(""))
     container.innerHTML = ""
-    const moviesNow = '/discover/movie?primary_release_date.gte=2023-03-15&primary_release_date.lte=2023-04-2'
+    const moviesNow = `/discover/movie?primary_release_date.gte=${getDate()}&primary_release_date.lte=${getDate2()}`
     const popular = '/discover/movie?sort_by=popularity.desc'
     const highestRated = 'discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc'
 
@@ -96,7 +102,7 @@ async function getMovies (Location, page){
 
     if(data.total_results <5){
         alert("Invalid search")
-        getMovies(textTh)
+        getMovies(defaultPage)
     }
     
 
@@ -119,7 +125,8 @@ if(poster_path){
    return totalPages
 }
 
-page==undefined?page=1:page
+    page==undefined?page=1:page
+
     current.innerHTML = `Current Page: ${page} <br>Total Pages: ${totalPages(data.total_pages)}`
 
     let div = document.createElement("div")
@@ -133,13 +140,6 @@ page==undefined?page=1:page
 }
 });
 }
-if (global.length === 0){
-    global.push(textTh,1)
-    getMovies(global.join(""))
-}
-
-const form = document.getElementById("form")
-const inputText = document.getElementById("inputText")
 
 form.addEventListener("submit", (event) =>{
     event.preventDefault()
@@ -151,3 +151,34 @@ form.addEventListener("submit", (event) =>{
 }
 })
 
+jump.addEventListener("submit", (eve) => {
+    eve.preventDefault()
+    if(isNaN(jumpText.value) || jumpText.value > 500){
+        alert("Enter a Valid number")
+        jumpText.value = ""
+    }else{
+        page = jumpText.value
+        getMovies(global.join(""),page)
+    }
+    
+})
+
+    getMovies(defaultPage,1)
+
+function getDate(){
+    let date = new Date()
+    let myDate = date.getFullYear() + '-' +
+    ('0' + (date.getMonth()+1)).slice(-2) +
+    '-'+('0' + date.getDate()).slice(-2);
+
+     return myDate
+}
+
+function getDate2(){
+    let date = new Date()
+    let myDate = date.getFullYear() + '-' + 
+    ('0' + (date.getMonth()+2)).slice(-2) +
+    '-'+('0' + date.getDate()).slice(-2);
+
+     return myDate
+}
