@@ -16,5 +16,24 @@
     width: 240px;
     padding: 10px;
     cursor: pointer;
-    border-radius: 30px;    
+    border-radius: 30px;  
+    display: flex;
+    flex-direction: column;  
+}
+
+.color {
+    background-color: aqua;
+}
+
+#watch {
+    width: 90px;
+    height: 40px;
+    background-color: red;
+    text-align: center;
+}
+
+#description{
+    margin-bottom: 0;
+    height: 80%;
+
 }

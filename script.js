@@ -19,50 +19,33 @@ const jumpText = document.getElementById("jumpText")
 const category = document.querySelectorAll(".categories")
 
 const form = document.getElementById("form")
+
 const inputText = document.getElementById("inputText")
+
 
 
 category.forEach((categry) => {
     categry.addEventListener("click", (event) => {
+
+        clearAll()
+        let target = event.target
+
+        target.classList.toggle("color")
         global = []
         global.push(defaults,getCategory(categry.innerHTML),apiKey)
         getMovies(global, 1)
     })
 })
 
-function getCategory (value){
-let returnCateg;
-    if(value === "Action"){
-        returnCateg = "/discover/movie?with_genres=28&"
-    }else if (value === "Comedy"){
-        returnCateg = "/discover/movie?with_genres=35&"
-        }
-    else if (value === "Animation"){
-      returnCateg = "/discover/movie?with_genres=16&"
-    }
-    else if (value === "Horror"){
-      returnCateg = "/discover/movie?with_genres=27&"
-    }
-    else if (value === "Popular"){
-        returnCateg = "/discover/movie?with_genres=35&"
-        }
-    else if (value === "Highest rated"){
-      returnCateg = `discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc&`
-    }
-    else if (value === "Movies Now"){
-      returnCateg = `/discover/movie?primary_release_date.gte=${getDate()}&primary_release_date.lte=${getDate2()}`
-    }
-      return returnCateg
+function clearAll(){
+    category.forEach((cate) => {
+        cate.classList.remove("color")
+    })
+
 }
-
-const moviesNow = ``
-    const popular = '/discover/movie?sort_by=popularity.desc'
-    const highestRated = ''
-
 
 document.getElementById("next").onclick = function (){
     container.innerHTML = ""
-
     page++
     
     let heloo = global.join("")
@@ -72,9 +55,7 @@ document.getElementById("next").onclick = function (){
 document.getElementById("prev").onclick = function(){
     container.innerHTML = ""
     page--
-   if(page<1){
-    page = 1
-   }
+    page <1 ? page = 1 : page
 
    let hello1 = global.join("")
     getMovies((hello1), page)
@@ -82,12 +63,11 @@ document.getElementById("prev").onclick = function(){
  const searchses  = `search/movie?&query=`
 
 async function getMovies (Location, page){
-    console.log(global)
+
+    page === undefined? page=1 : page
+    console.log(page)
     console.log(global.join(""))
     container.innerHTML = ""
-    const moviesNow = `/discover/movie?primary_release_date.gte=${getDate()}&primary_release_date.lte=${getDate2()}`
-    const popular = '/discover/movie?sort_by=popularity.desc'
-    const highestRated = 'discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc'
 
     if(page>1){    
         Location = `${Location}&page=${page}`
@@ -105,7 +85,6 @@ async function getMovies (Location, page){
         getMovies(defaultPage)
     }
     
-
     console.log(data)
 
     results.forEach(movie => {
@@ -125,8 +104,6 @@ if(poster_path){
    return totalPages
 }
 
-    page==undefined?page=1:page
-
     current.innerHTML = `Current Page: ${page} <br>Total Pages: ${totalPages(data.total_pages)}`
 
     let div = document.createElement("div")
@@ -134,20 +111,26 @@ if(poster_path){
     `<img src="${img}"> ${genre_ids} ${title}`
     div.addEventListener("click", (r) => {
     r.preventDefault()
-    div.innerHTML = `Description ${overview}`  
+    div.innerHTML = `<div id="description">${overview}</div> <div id="watch">Watch</div>`  
     })
     container.appendChild(div)   
+
+    const watch = div.childNodes
+    console.log(watch)
 }
 });
 }
 
 form.addEventListener("submit", (event) =>{
     event.preventDefault()
+
     if(inputText){
     global = []
     global.push(defaults,searchses,inputText.value,apiKey)
     getMovies(global.join(""))
     inputText.value = ""
+    clearAll()
+
 }
 })
 
@@ -182,3 +165,30 @@ function getDate2(){
 
      return myDate
 }
+
+function getCategory (value){
+    let returnCateg;
+        if(value === "Action"){
+            returnCateg = "/discover/movie?with_genres=28&"
+        }else if (value === "Comedy"){
+            returnCateg = "/discover/movie?with_genres=35&"
+            }
+        else if (value === "Animation"){
+          returnCateg = "/discover/movie?with_genres=16&"
+        }
+        else if (value === "Horror"){
+          returnCateg = "/discover/movie?with_genres=27&"
+        }
+        else if (value === "Popular"){
+            returnCateg = "/discover/movie?with_genres=35&"
+            }
+        else if (value === "Highest rated"){
+          returnCateg = `discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc&`
+        }
+        else if (value === "Movies Now"){
+          returnCateg = `/discover/movie?primary_release_date.gte=${getDate()}&primary_release_date.lte=${getDate2()}`
+        }
+          return returnCateg
+    }
+
+  
